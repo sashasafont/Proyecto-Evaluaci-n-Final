@@ -44,11 +44,13 @@ CREATE TABLE seguidores (
 
 -- 5. HISTORIAL (Registro de transmisiones pasadas)
 CREATE TABLE historial (
+    usuario_id INT NOT NULL,
     historial_id INT AUTO_INCREMENT PRIMARY KEY,
     canal_id INT NOT NULL,
     contenido TEXT NOT NULL,
     FOREIGN KEY (contenido) REFERENCES live(contenido) ON DELETE CASCADE,
-    FOREIGN KEY (canal_id) REFERENCES canales(canal_id) ON DELETE CASCADE
+    FOREIGN KEY (canal_id) REFERENCES canales(canal_id) ON DELETE CASCADE,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(usuario_id) ON DELETE CASCADE
 );
 
 -- 6. CHAT LIVE (Mensajes en tiempo real en los directos)
@@ -112,6 +114,7 @@ CREATE TABLE notificacion (
 );
 
 -- 12. SUGERIDOS (Algoritmo para recomendar canales a usuarios)
+-- ACABAR DE MIRAR COMO HACER ELTAGEADO DEL CONTENIDO
 CREATE TABLE sugeridos (
     sugerido_id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL, -- A quién se le sugiere
@@ -126,7 +129,6 @@ CREATE TABLE billetera (
     billetera_id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT UNIQUE NOT NULL,
     saldo_monedas INT DEFAULT 0,
-    ultima_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(usuario_id) ON DELETE CASCADE
 );
 
@@ -135,8 +137,7 @@ CREATE TABLE reportes (
     reporte_id INT AUTO_INCREMENT PRIMARY KEY,
     denunciante_id INT NOT NULL,
     denunciado_id INT NOT NULL,
-    motivo VARCHAR(100) NOT NULL,
-    detalles TEXT,
+    motivo VARCHAR(500) NOT NULL,
     estado ENUM('pendiente', 'revisado', 'desestimado') DEFAULT 'pendiente',
     creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (denunciante_id) REFERENCES usuarios(usuario_id) ON DELETE CASCADE,
